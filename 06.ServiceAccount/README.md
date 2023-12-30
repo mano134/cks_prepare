@@ -1,9 +1,9 @@
 # Service account
 ![6](../images/6.png)
 
-官方文档: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+doc: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 
-## 1. 创建service account，不自动挂载token
+## 1. create service account
 
 ### service account
 
@@ -13,7 +13,7 @@ kind: ServiceAccount
 metadata:
   name: backend-sa
   namespace： qa
-automountServiceAccountToken: false # *
+automountServiceAccountToken: false #add
 ```
 
 ### pod
@@ -25,15 +25,15 @@ metadata:
   namespace: qa 
 spec:
   serviceAccountName: backend-sa
-  automountServiceAccountToken: false # *
+  automountServiceAccountToken: false #add
 ```
 
-## 2. 删除没有使用的service account
+## 2. find and delete unused service accounts
 
 ```shell
 kubectl get po -oyaml|grep -i serviceaccountname
 
 kubectl get sa
 
-对比后删除没有使用的service account
+kubectl delete sa XXX
 ```

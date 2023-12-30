@@ -1,46 +1,44 @@
 # kube-bench
 
-![10](../images/10.png)
+<img src="../images/10.png" alt="drawing" width="250"/>
 
-## 0、在master节点执行kube-bench
+## 0. master kube-bench
 
 ```shell
-kube-bench run node/master/etcd
+$ ssh kscs00201-master
+$ kube-bench run node/master/etcd
 ```
 
-## 1、在api server的配置文件修改：
-
+## 1. api server (/etc/kubernetes/manifests/kube-apiserver.yaml) master
 ```yaml
 - --authorization-mode=Node,RBAC
-- --insecure-port=0
-#- --insecure-bind-address=0.0.0.0 # 删除
 ```
 
-## 2、kubelet (/var/lib/kubelet/config.yaml) node节点
+## 2. kubelet (/var/lib/kubelet/config.yaml) worker node
 ```yaml
 apiVersion: kubelet.config.k8s.io/v1beta1
 authentication:
   anonymous:
-    enabled: false # 修改为false
+    enabled: false # set false
   webhook:
     cacheTTL: 2m0s
     enabled: true
   x509:
     clientCAFile: /etc/kubernetes/pki/ca.crt
 authorization:
-  mode: Webhook # 修改为Webhook
+  mode: Webhook # set Webhook
   webhook:
     cacheAuthorizedTTL: 5m0s
     cacheUnauthorizedTTL: 30s
 ...
 ```
 
-## 3、etcd.yaml (/etc/kubernetes/manifests/etcd.yaml )
+## 3. etcd.yaml (/etc/kubernetes/manifests/etcd.yaml )
 ```yaml
 - --client-cert-auth=true
 ```
 
-## 4、重启kubelet
+## 4. restart kubelet
 
 ```shell
 service kubelet restart

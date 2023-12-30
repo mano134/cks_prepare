@@ -1,19 +1,21 @@
 # AppArmor
 
-![5](../images/5.png)
+<img src="../images/5.png" alt="drawing" width="300"/>
 
-## 官方文档：https://kubernetes.io/docs/tutorials/security/apparmor/
+## doc：https://kubernetes.io/docs/tutorials/security/apparmor/
 
 
-## 在node节点创建AppArmor使用的profile,并加载profile 文件
+## enforce apparmor profile
 
 ```shell
+ssh kssh00401-worker1
+
 apparmor_parser -q /etc/apparmor.d/nginx_apparmor
 
 apparmor_status | grep nginx
 ```
 
-## 创建pod
+## prepare pod
 
 ```yaml
 apiVersion: v1
@@ -21,10 +23,10 @@ kind: Pod
 metadata:
   name: hello-apparmor
   annotations:
-    container.apparmor.security.beta.kubernetes.io/hello: localhost/nginx_apparmor # 重点是hello的容器和localhost/nginx_apparmor
+    container.apparmor.security.beta.kubernetes.io/hello: localhost/nginx_apparmor
 spec:
   containers:
-  - name: hello #和上面的hello对应
+  - name: hello
     image: busybox:1.28
     command: [ "sh", "-c", "echo 'Hello AppArmor!' && sleep 1h" ]
 ```

@@ -1,9 +1,9 @@
 # Audit
 
-![](../images/13.png)
-## 官方文档：https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
+<img src="../images/13.png" alt="drawing" width="350"/>
+## doc：https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
 
-## 1、启用审计(master节点)
+## 1、enable audit (master node) 
 
 ```yaml
 - --audit-policy-file=/etc/kubernetes/logpolicy/sample-policy.yaml
@@ -12,7 +12,7 @@
 - --audit-log-maxage=10 # The maximum number of days to retain old audit log files based on the timestamp encoded in their filename.
 ```
 
-挂载文件
+mount files: 
 
 ```yaml
 ...
@@ -39,7 +39,7 @@ volumes:
     type: FileOrCreate
 ```
 
-## 2、修改对应的policy 文件
+## 2. create policy
 ```yaml
 apiVersion: audit.k8s.io/v1
 kind: Policy
@@ -64,7 +64,7 @@ rules:
     - "RequestReceived"
 ```
 
-## 3、重启kubelet
+## 3. restart kubelet
 ```shell
 systemctl restart kubelet
 ```

@@ -1,16 +1,8 @@
 # Network Policy
 
-![4](../images/4.png)
+<img src="../images/4.png" alt="drawing" width="250"/>
 
-官方文档：https://kubernetes.io/docs/concepts/services-networking/network-policies/
-
-## 创建一个网络策略，来限制pod之前相互访问，默认的策略是pod之间，在不同的namespace是可以相互访问的
-
-### 创建一个默认的deny all ingress
-
-### 创建一个默认的deny all egress
-
-### 创建一个默认的deny all ingress、egress
+doc：https://kubernetes.io/docs/concepts/services-networking/network-policies/
 
 ```yaml
 ---
@@ -26,6 +18,11 @@ spec:
   - Ingress
 ```
 
+```sh
+kubectl get ns qa --show-labels
+kubectl get po products-service -n development --show-labels
+```
+
 ![4-1](../images/4-1.png)
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -36,18 +33,21 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      role: pod-xxx # pod的label
+      role: pod-xxx # pod label
   policyTypes:
     - Ingress
   ingress:
     - from:
       - namespaceSelector:
           matchLabels:
-            role: test # testing namespace 的label
+            role: test # testing namespace label
     - from:
-      - namespaceSelector: {} # 所有namespace
+      - namespaceSelector: {} # namespace
         podSelector:
           matchLabels:
             enviroment: staging
 ```
 
+```
+root@k8s-master:~/cks# kubectl apply -f network-policy.yaml
+```

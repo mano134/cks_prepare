@@ -1,19 +1,18 @@
 # Sysdig
 
-![14](../images/14.png)
+<img src="../images/14.png" alt="drawing" width="250"/>
 
 Make sure to store the incident file on the cluster's worker node.
 
 
-## 登录到pod所在的node节点，并且查看对应pod的container id
 
 ```shell
-# 查看sysdig支持类型
+# sysdig
 sysdig -l |grep -iE 'time|user|proc'
 
-# 查看tomcat容器id
+# get tomcat id
 docker ps|grep tomcat
 
-# node节点执行命令
+# node
 sysdig -M 30 -p "%evt.time,%user.uid,%proc.name" container.id=[container_id] > /opt/KSRS00101/incidents/summary
 ```

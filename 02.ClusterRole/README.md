@@ -1,15 +1,39 @@
 # Clusterrole
+```bash
+# context
+A Role bound to a Pod serviceAccount grants overly permissive permissions.
+Complete the following tasks to reduce the set of permissions.
+# Task
+Given an existing Pod named dev-pod running in the namespace monitoring.
+Edit the existing Role bound to the Pod.
+ServiceAccount service-account-web to only allow performing get operations, only on resources of type Pods.
+Create a new Role named role-2 in the namespace monitoring, which only allows performing update operations, only on resources of type statefulsets.
+Create a new RoleBinding named role-2-binding binding the newly created Role to the Pod ServiceAccount.
+Don not delete the existing RoleBinding.
+Note: Don't delete the existing RoleBinding.
+```
 
-修改namespace下role的权限只允许对某一类对象做list list的操作
-新建一个serviceaccount (sa02)
-创建名为role02的role，并且通过rolebinding绑定role02，只允许对persistentvolumeclaims做update操作。
+```sh
+# Prepare
+$ kubectl config use-context KSTR00103
+# Answer
+$ kubectl get role -n monitoring 
+NAME       CREATED AT
+web-role   2021-12-17T09:30:05Z
 
-```shell
-1. 修改对应的role使用list权限
-
-2. kubectl create sa sa01
-
-3. kubectl create role role02 --verb=update
-
-4. kubectl create rolebinding xxx-rolebinding --role role02 --serviceaccount namespace:sa02
+$ kubectl edit role -n monitoring web-role 
+```
+```yaml
+...
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+```  
+```sh
+$ kubectl create role role-2 -n monitoring --verb=update --resource=statefulsets
+$ kubectl create rolebinding role-2-binding -n monitoring --role role-2 --serviceaccount monitoring:service-account-web
 ```

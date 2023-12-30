@@ -1,37 +1,56 @@
 # Secrets
 
-![](../images/3.png)
+<img src="../images/3.png" alt="drawing" width="250"/>
 
-## 1、导出存在的secret
-```shell
+# Prepare
+$ kubectl config use-context KSMV00201
+# Answer
+
+```sh
+$ kubectl get secrets -n monitoring db1-test -oyaml
+```
+```yaml
+apiVersion: v1
+data:
+  password: cGFzcw==
+  username: YWRtaW4=
+...
+```
+```bash
+$ echo "cGFzcw==" | base64 -d > /home/candidate/old-password.txt
+$ echo "YWRtaW4=" | base64 -d > /home/candidate/user.txt
+
+# or 
 kubectl -n istio-system get secrets db1-test -ojsonpath='{.data.user}'|base64 -d > /etc/candidate/user.txt
 
 kubectl -n istio-system get secrets db1-test -ojsonpath='{.data.pass}'|base64 -d > /etc/candidate/pass.txt
+
+$ kubectl create secret generic dev-mark -n monitoring --from-literal=username=production-instance --from-literal=password=aVJdk7NSjk
+
+$ vim secret-pod.yaml
 ```
 
-## 2、新建secret
-```
-kubectl create secret generic db2-test --from-literal=user=production-instance --from-literal=pass=password -n istio-system
-```
-
-## 3、创建pod挂载secret
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
   name: secret-pod
-  namespace: istio-system
+  namespace: monitoring
 spec:
   containers:
-  - name: dev-container
-    image: nginx
+  - name: test-secret-container
+    image: redis
+#add
     volumeMounts:
     - name: secret-volume
-      mountPath: "/etc/secret"
+      mountPath: "/etc/test-secret"
       readOnly: true
   volumes:
   - name: secret-volume
     secret:
-      secretName: db2-test
-      optional: false # default setting; "mysecret" must exist
+      secretName: dev-mark
+      optional: false
+```
+```
+$ kubectl apply -f secret-pod.yaml
 ```

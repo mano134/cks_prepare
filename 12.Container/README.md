@@ -1,6 +1,6 @@
 # Containers
 
-![12](../images/12.png)
+<img src="../images/12.png" alt="drawing" width="300"/>
 
 ## 删除有状态的和privileged的pod
 
